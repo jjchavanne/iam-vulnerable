@@ -287,11 +287,12 @@ aws configure --profile stolen-keys
 ```
 ```
 vi ~/.aws/credentials
-
+    
+# add this line with the token under the new profile
 aws_session_token = <TOKEN>
 ```
  
-16. Add user to group 
+16. Add user to group using the **stolen-keys** profile
 ```
 aws iam add-user-to-group --group-name privesc-sre-group --user-name privesc3-CreateEC2WithExistingInstanceProfile-user --profile stolen-keys
 ```
