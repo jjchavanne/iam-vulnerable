@@ -177,7 +177,7 @@ This should fail.... THERE MUST BE ANOTHER WAY!
 aws iam list-instance-profiles
 ```
 
-> Example Output (truncated for brevity:
+> Example Output (truncated for brevity):
 ```
 {
     "InstanceProfiles": [
@@ -223,6 +223,7 @@ aws iam list-instance-profiles
         }
     ]
 }
+```
 
 10. Create a SSH key pair or import an existing one.  Ref: [Create key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html):
 ```
