@@ -172,18 +172,98 @@ aws iam add-user-to-group --group-name privesc-sre-group --user-name privesc3-Cr
 ```
 This should fail.... THERE MUST BE ANOTHER WAY!
 
-9.  Create an EC2 instance with otional `--profile` flag
-
-**TODO - Below is example from the website, however need to determine what I should enter and add explanation**
+9.  View the current instance profiles
 ```
-aws ec2 run-instances --image-id ami-0de53d8956e8dcf80 --instance-type t2.micro
---iam-instance-profile Name=adminaccess --key-name "Public" --security-group-ids
-sg-ca4a1fb8 --region us-east-1
+aws iam list-instance-profiles
 ```
 
+> Example Output (truncated for brevity:
+```
+{
+    "InstanceProfiles": [
+        {
+            "Path": "/",
+            "InstanceProfileName": "privesc-high-priv-service-profile",
+            "InstanceProfileId": "AIPATSEX3CJZE4UFWDORI",
+            "Arn": "arn:aws:iam::245131580018:instance-profile/privesc-high-priv-service-profile",
+            "CreateDate": "2022-05-09T03:30:33+00:00",
+            "Roles": [
+                {
+                    "Path": "/",
+                    "RoleName": "privesc-high-priv-service-role",
+                    "RoleId": "AROATSEX3CJZPA7ZDK3BE",
+                    "Arn": "arn:aws:iam::245131580018:role/privesc-high-priv-service-role",
+                    "CreateDate": "2022-05-09T03:27:31+00:00",
+                    "AssumeRolePolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Sid": "",
+                                "Effect": "Allow",
+                                "Principal": {
+                                    "Service": [
+                                        "codebuild.amazonaws.com",
+                                        "ec2.amazonaws.com",
+                                        "glue.amazonaws.com",
+                                        "elasticbeanstalk.amazonaws.com",
+                                        "datapipeline.amazonaws.com",
+                                        "lambda.amazonaws.com",
+                                        "ecs-tasks.amazonaws.com",
+                                        "eks.amazonaws.com",
+                                        "sagemaker.amazonaws.com",
+                                        "cloudformation.amazonaws.com"
+                                    ]
+                                },
+                                "Action": "sts:AssumeRole"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
 
+10. Create a SSH key pair or import an existing one.  Ref: [Create key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html):
+```
+aws ec2 create-key-pair \
+    --key-name my-key-pair \
+    --key-type rsa \
+    --query "KeyMaterial" \
+    --output text > my-key-pair.pem \
+    --region us-east-1
+ 
+# Change it's permissions.  This is required by AWS.
+chmod 400 my-key-pair.pem
+```
+    
+OR import existing one:
+```
+aws ec2 import-key-pair --key-name id_rsa --public-key-material fileb://~/.ssh/id_rsa.pub --region us-east-1
+```
 
+11.  Create an EC2 instance with optional `--profile` flag
 
+**TODO - Below is example, however need add explanation**
+
+```
+aws ec2 run-instances --image-id ami-0708edb40a885c6ee --instance-type t2.micro --iam-instance-profile Name=privesc-high-priv-service-profile --key-name my-key-pair --security-group-ids sg-04edcd63f405badb6 --region us-east-1
+```
+
+12. Search for and copy the instance-id from output above and run the following command to obtain the public IP address.
+```
+aws ec2 describe-instances --instance-id <INSTANCE_ID> --region us-east-1
+```
+    
+13. Search for and copy the Public IP Address and then SSH into the instance using your ssh key based on which key you used earlier.
+
+```
+ssh ubuntu@<INSTANCE_PUBLIC_IP> -i my-key-pair.pem   
+#OR   
+ssh ubuntu@<INSTANCE_PUBLIC_IP> -i ~/.ssh/id_rsa
+```
+
+## LEFT OFF HERE
 
 5. Create a new version of the policy, based on the new policy document, and set as default for the user.  Optionally you can add --profile flag.
 ```
