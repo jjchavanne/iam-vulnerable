@@ -303,6 +303,7 @@ aws iam list-groups-for-user --user-name privesc3-CreateEC2WithExistingInstanceP
 ``` 
 
 ## References:
-https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
+- https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
+- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
+- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
+- [Unintended side affects to disable IMDS completely](https://repost.aws/questions/QU28Zq5Ge0Q5WJF27HPNMhoA/are-there-any-unintended-side-effects-of-disabling-the-ec-2-instance-metadata-service-endpoint-both-imd-sv-1-imd-sv-2)
