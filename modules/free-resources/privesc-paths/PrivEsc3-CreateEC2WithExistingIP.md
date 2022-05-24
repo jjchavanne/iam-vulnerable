@@ -1,5 +1,16 @@
 # PrivEsc3-CreateEC2WithExistingIP
 
+## Assumptions & Reminder
+1. The user & user credentials have been obtained already and has the ability to create their own profile with AWS access key.  If you doing this for testing and already have your own AWS profile and credentials setup, it is not required to actually configure a new profile, however, if you want to truly simulate the scenario with only the user profile, the actions require to add the `--profile` at the end of most all commands (unless this user becomes your default profile, although we do not recommend that).
+    - Option #1 - Enable all the profiles from the end of main IAM vulnerable QuickStart section
+    - To setup a new profile manually, go to the console > IAM > find this User, and add Access Key, obtain it and do the following:
+
+```
+aws configure --profile privesc3
+```
+and enter in the access, secret key, and region info
+
+
 ## Additional Refs:
 https://docs.aws.amazon.com/emr/latest/ManagementGuide/security_iam_id-based-policy-examples-view-own-permissions.html
 
@@ -244,9 +255,10 @@ aws ec2 import-key-pair --key-name id_rsa --public-key-material fileb://~/.ssh/i
 ```
 
 11. Find an available EC2 image that can be used 
-    - If allowed to use public images (refer to [Find an AWS AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html)) and use an available AMI ID
-    - If environment is more restrictive and for example only allows private images, run the following command in the region and copy down an ImageID.
-        - `aws ec2 describe-images --owners self --region us-east-1`
+    - First Rerun & view the results from the `aws iam get-policy-version` command you ran earlier for your user's attached policy to see if there are any restrictions/conditions.
+    - If none and allowed to use public images (refer to [Find an AWS AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html)) and use an available AMI ID
+    - If environment is more restrictive and for example your policy only allows private images and/or to restrict launching images with specific tags, run the following command in the region and copy down an ImageID that you are allowed to use based on your attached policy.
+        - `aws ec2 describe-images --owners self --region us-east-1`       
 
 12.  Create an EC2 instance with the higher privilege instance-profile optional `--profile` flag
 
