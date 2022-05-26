@@ -239,14 +239,14 @@ aws iam list-instance-profiles
 10. Create a SSH key pair or import an existing one.  Ref: [Create key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html):
 ```
 aws ec2 create-key-pair \
-    --key-name my-key-pair \
+    --key-name key-pair \
     --key-type rsa \
     --query "KeyMaterial" \
-    --output text > my-key-pair.pem \
+    --output text > key-pair.pem \
     --region us-east-1
  
 # Change it's permissions.  This is required by AWS.
-chmod 400 my-key-pair.pem
+chmod 400 key-pair.pem
 ```
     
 OR import existing one:
@@ -267,18 +267,22 @@ aws ec2 import-key-pair --key-name id_rsa --public-key-material fileb://~/.ssh/i
     - requires SSH inbound rule either already set or must be created**
 
 ```
-aws ec2 run-instances --image-id ami-0708edb40a885c6ee --instance-type t2.micro --iam-instance-profile Name=privesc-high-priv-service-profile --key-name my-key-pair --security-group-ids sg-04edcd63f405badb6 --region us-east-1
+aws ec2 run-instances --image-id ami-0708edb40a885c6ee --instance-type t2.micro --iam-instance-profile Name=privesc-high-priv-service-profile --key-name key-pair --security-group-ids sg-04edcd63f405badb6 --region us-east-1
 ```
 
 13. Search for and copy the instance-id from output above and run the following command to obtain the public IP address.
 ```
 aws ec2 describe-instances --instance-id <INSTANCE_ID> --region us-east-1
+#OR with additional filter:
+aws ec2 describe-instances --instance-id <INSTANCE_ID> --region us-east-1 \
+  --query "Reservations[*].Instances[*].PublicIpAddress" \
+  --output=text
 ```
     
 14. Search for and copy the Public IP Address and then SSH into the instance using your ssh key based on which key you used earlier.
 
 ```
-ssh ubuntu@<INSTANCE_PUBLIC_IP> -i my-key-pair.pem   
+ssh ubuntu@<INSTANCE_PUBLIC_IP> -i key-pair.pem   
 #OR   
 ssh ubuntu@<INSTANCE_PUBLIC_IP> -i ~/.ssh/id_rsa
 ```
@@ -318,6 +322,15 @@ aws iam add-user-to-group --group-name privesc-sre-group --user-name privesc3-Cr
 ```
 aws iam list-groups-for-user --user-name privesc3-CreateEC2WithExistingInstanceProfile-user
 ``` 
+
+### CLEANUP
+- Delete instance, group policy from user via Console
+
+- Delete ssh key both from aws and public key locally
+```
+aws ec2 delete-key-pair --key-name $KEY_NAME --region us-east-1
+rm -rf $KEY_NAME.pem
+```
 
 ## References:
 - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
