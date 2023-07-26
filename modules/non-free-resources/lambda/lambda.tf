@@ -9,21 +9,25 @@ resource "aws_iam_policy" "privesc-high-priv-lambda-policy2" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = "*"
+        Action   = "*"
         Effect   = "Allow"
         Resource = "*"
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 # Source: https://gist.github.com/smithclay/e026b10980214cbe95600b82f67b4958
 # Simple AWS Lambda Terraform Example
 
 data "archive_file" "lambda_zip" {
-    type          = "zip"
-    source_file   = "modules/non-free-resources/lambda/index.js"
-    output_path   = "modules/non-free-resources/lambda/lambda_function.zip"
+  type        = "zip"
+  source_file = "modules/non-free-resources/lambda/index.js"
+  output_path = "modules/non-free-resources/lambda/lambda_function.zip"
 }
 
 
@@ -34,10 +38,14 @@ resource "aws_lambda_function" "test_lambda" {
   handler          = "index.handler"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime          = "nodejs12.x"
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 resource "aws_iam_role" "privesc-high-priv-lambda-role2" {
-  name                = "privesc-high-priv-lambda-role2"
-  assume_role_policy  = jsonencode({
+  name = "privesc-high-priv-lambda-role2"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -51,6 +59,10 @@ resource "aws_iam_role" "privesc-high-priv-lambda-role2" {
     ]
   })
   managed_policy_arns = [aws_iam_policy.privesc-high-priv-lambda-policy2.arn]
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 #resource "aws_iam_role_policy_attachment" "iam_for_lambda_tf-attach-policy" {

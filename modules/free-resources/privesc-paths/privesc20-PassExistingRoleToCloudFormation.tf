@@ -6,25 +6,29 @@ resource "aws_iam_policy" "privesc20-PassExistingRoleToCloudFormation" {
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
   policy = jsonencode({
-	 "Version": "2012-10-17",
-	 "Statement": [
-	   {
-		 "Sid": "VisualEditor0",
-		 "Effect": "Allow",
-		 "Action": [
-			 "iam:PassRole",
-			 "cloudformation:CreateStack",
-			 "cloudformation:DescribeStacks"
-		 ],
-		 "Resource": "*"
-	  }
-   ]
-})
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "VisualEditor0",
+        "Effect" : "Allow",
+        "Action" : [
+          "iam:PassRole",
+          "cloudformation:CreateStack",
+          "cloudformation:DescribeStacks"
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_role" "privesc20-PassExistingRoleToCloudFormation-role" {
-  name                = "privesc20-PassExistingRoleToCloudFormation-role"
-  assume_role_policy  = jsonencode({
+  name = "privesc20-PassExistingRoleToCloudFormation-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -37,11 +41,19 @@ resource "aws_iam_role" "privesc20-PassExistingRoleToCloudFormation-role" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_user" "privesc20-PassExistingRoleToCloudFormation-user" {
   name = "privesc20-PassExistingRoleToCloudFormation-user"
   path = "/"
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_access_key" "privesc20-PassExistingRoleToCloudFormation-user" {

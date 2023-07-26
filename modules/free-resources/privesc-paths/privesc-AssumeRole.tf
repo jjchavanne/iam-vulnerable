@@ -10,16 +10,20 @@ resource "aws_iam_policy" "privesc-AssumeRole-high-priv-policy" {
     Statement = [
       {
         Effect   = "Allow"
-        Action = "*"
+        Action   = "*"
         Resource = "*"
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_role" "privesc-AssumeRole-starting-role" {
-  name                = "privesc-AssumeRole-starting-role"
-  assume_role_policy  = jsonencode({
+  name = "privesc-AssumeRole-starting-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -32,11 +36,15 @@ resource "aws_iam_role" "privesc-AssumeRole-starting-role" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_role" "privesc-AssumeRole-intermediate-role" {
-  name                = "privesc-AssumeRole-intermediate-role"
-  assume_role_policy  = jsonencode({
+  name = "privesc-AssumeRole-intermediate-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -49,12 +57,16 @@ resource "aws_iam_role" "privesc-AssumeRole-intermediate-role" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 
 resource "aws_iam_role" "privesc-AssumeRole-ending-role" {
-  name                = "privesc-AssumeRole-ending-role"
-  assume_role_policy  = jsonencode({
+  name = "privesc-AssumeRole-ending-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -67,6 +79,10 @@ resource "aws_iam_role" "privesc-AssumeRole-ending-role" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 
@@ -74,6 +90,10 @@ resource "aws_iam_role" "privesc-AssumeRole-ending-role" {
 resource "aws_iam_user" "privesc-AssumeRole-start-user" {
   name = "privesc-AssumeRole-start-user"
   path = "/"
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 resource "aws_iam_access_key" "privesc-AssumeRole-start-user" {
   user = aws_iam_user.privesc-AssumeRole-start-user.name

@@ -1,5 +1,5 @@
 resource "aws_cloudformation_stack" "privesc-cloudformationStack" {
-  name = "privesc-cloudformationStack"
+  name         = "privesc-cloudformationStack"
   iam_role_arn = var.shared_high_priv_servicerole
 
   template_body = <<STACK
@@ -16,5 +16,9 @@ resource "aws_cloudformation_stack" "privesc-cloudformationStack" {
   }
 }
 STACK
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 

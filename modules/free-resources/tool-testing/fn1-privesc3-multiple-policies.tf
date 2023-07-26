@@ -11,15 +11,19 @@ resource "aws_iam_policy" "fn1-privesc3-partial" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = [	      
-        "ec2:DescribeInstances",
-        "ec2:RunInstances"
+        Action = [
+          "ec2:DescribeInstances",
+          "ec2:RunInstances"
         ]
         Effect   = "Allow"
         Resource = "*"
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_policy" "fn1-passrole-star" {
@@ -34,19 +38,23 @@ resource "aws_iam_policy" "fn1-passrole-star" {
     Statement = [
       {
         Action = [
-	      "iam:PassRole"
+          "iam:PassRole"
         ]
         Effect   = "Allow"
         Resource = "*"
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 
 resource "aws_iam_role" "fn1-privesc3-partial-role" {
-  name                = "fn1-privesc3-partial-role"
-  assume_role_policy  = jsonencode({
+  name = "fn1-privesc3-partial-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -59,15 +67,23 @@ resource "aws_iam_role" "fn1-privesc3-partial-role" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_user" "fn1-privesc3-partial-user" {
   name = "fn1-privesc3-partial-user"
   path = "/"
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_access_key" "fn1-privesc3-partial-user" {
- user = aws_iam_user.fn1-privesc3-partial-user.name
+  user = aws_iam_user.fn1-privesc3-partial-user.name
 }
 
 
