@@ -10,20 +10,24 @@ resource "aws_iam_policy" "privesc16-PassRoleToNewLambdaThenTriggerWithNewDynamo
     Statement = [
       {
         Action = [
-	      "lambda:CreateFunction",
- 			  "iam:PassRole",
-			  "lambda:CreateEventSourceMapping"
+          "lambda:CreateFunction",
+          "iam:PassRole",
+          "lambda:CreateEventSourceMapping"
         ]
         Effect   = "Allow"
         Resource = "*"
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_role" "privesc16-PassRoleToNewLambdaThenTriggerWithNewDynamo-role" {
-  name                = "privesc16-PassRoleToNewLambdaThenTriggerWithNewDynamo-role"
-  assume_role_policy  = jsonencode({
+  name = "privesc16-PassRoleToNewLambdaThenTriggerWithNewDynamo-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -36,11 +40,19 @@ resource "aws_iam_role" "privesc16-PassRoleToNewLambdaThenTriggerWithNewDynamo-r
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_user" "privesc16-PassRoleToNewLambdaThenTriggerWithNewDynamo-user" {
   name = "privesc16-PassRoleToNewLambdaThenTriggerWithNewDynamo-user"
   path = "/"
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_access_key" "privesc16-PassRoleToNewLambdaThenTriggerWithNewDynamo-user" {

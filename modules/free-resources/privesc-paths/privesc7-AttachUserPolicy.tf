@@ -9,17 +9,21 @@ resource "aws_iam_policy" "privesc7-AttachUserPolicy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = "iam:AttachUserPolicy"
+        Action   = "iam:AttachUserPolicy"
         Effect   = "Allow"
         Resource = "*"
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_role" "privesc7-AttachUserPolicy-role" {
-  name                = "privesc7-AttachUserPolicy-role"
-  assume_role_policy  = jsonencode({
+  name = "privesc7-AttachUserPolicy-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -32,11 +36,19 @@ resource "aws_iam_role" "privesc7-AttachUserPolicy-role" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_user" "privesc7-AttachUserPolicy-user" {
   name = "privesc7-AttachUserPolicy-user"
   path = "/"
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_access_key" "privesc7-AttachUserPolicy-user" {

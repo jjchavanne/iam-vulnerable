@@ -4,7 +4,9 @@ resource "aws_sagemaker_notebook_instance" "privesc-sagemakerNotebook" {
   instance_type = "ml.t2.medium"
 
   tags = {
-    Name = "foo"
+    Name     = "foo"
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
   }
 }
 
@@ -12,6 +14,10 @@ resource "aws_sagemaker_notebook_instance" "privesc-sagemakerNotebook" {
 resource "aws_iam_role" "privesc-sagemaker-role" {
   name               = "privesc-sagemaker-role"
   assume_role_policy = data.aws_iam_policy_document.example.json
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 data "aws_iam_policy_document" "example" {
@@ -34,12 +40,16 @@ resource "aws_iam_policy" "privesc-high-priv-sagemaker-policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = "*"
+        Action   = "*"
         Effect   = "Allow"
         Resource = "*"
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 

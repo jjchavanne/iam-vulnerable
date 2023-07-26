@@ -8,22 +8,26 @@ resource "aws_iam_policy" "privesc14-UpdatingAssumeRolePolicy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      
+
       {
         Action = [
-	      "iam:UpdateAssumeRolePolicy",
-        "sts:AssumeRole"
+          "iam:UpdateAssumeRolePolicy",
+          "sts:AssumeRole"
         ]
         Effect   = "Allow"
         Resource = "*"
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_role" "privesc14-UpdatingAssumeRolePolicy-role" {
-  name                = "privesc14-UpdatingAssumeRolePolicy-role"
-  assume_role_policy  = jsonencode({
+  name = "privesc14-UpdatingAssumeRolePolicy-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -36,11 +40,19 @@ resource "aws_iam_role" "privesc14-UpdatingAssumeRolePolicy-role" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_user" "privesc14-UpdatingAssumeRolePolicy-user" {
   name = "privesc14-UpdatingAssumeRolePolicy-user"
   path = "/"
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_access_key" "privesc14-UpdatingAssumeRolePolicy-user" {

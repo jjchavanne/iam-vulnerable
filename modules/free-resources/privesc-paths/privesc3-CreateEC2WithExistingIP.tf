@@ -10,22 +10,26 @@ resource "aws_iam_policy" "privesc3-CreateEC2WithExistingInstanceProfile" {
     Statement = [
       {
         Action = [
-	      "iam:PassRole",
-        "ec2:DescribeInstances",
-        "ec2:RunInstances",
-        "ec2:CreateKeyPair",
-        "ec2:AssociateIamInstanceProfile"
+          "iam:PassRole",
+          "ec2:DescribeInstances",
+          "ec2:RunInstances",
+          "ec2:CreateKeyPair",
+          "ec2:AssociateIamInstanceProfile"
         ]
         Effect   = "Allow"
         Resource = "*"
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_role" "privesc3-CreateEC2WithExistingInstanceProfile-role" {
-  name                = "privesc3-CreateEC2WithExistingInstanceProfile-role"
-  assume_role_policy  = jsonencode({
+  name = "privesc3-CreateEC2WithExistingInstanceProfile-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -38,6 +42,10 @@ resource "aws_iam_role" "privesc3-CreateEC2WithExistingInstanceProfile-role" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 
@@ -45,6 +53,10 @@ resource "aws_iam_role" "privesc3-CreateEC2WithExistingInstanceProfile-role" {
 resource "aws_iam_user" "privesc3-CreateEC2WithExistingInstanceProfile-user" {
   name = "privesc3-CreateEC2WithExistingInstanceProfile-user"
   path = "/"
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 

@@ -9,22 +9,26 @@ resource "aws_iam_policy" "privesc-sageMakerCreatePresignedNotebookURL-policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
+        Effect = "Allow"
         Action = [
           "sagemaker:CreatePresignedNotebookInstanceUrl",
-          "sagemaker:ListNotebookInstances"          
+          "sagemaker:ListNotebookInstances"
         ]
         Resource = "*"
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 
 
 resource "aws_iam_role" "privesc-sageMakerCreatePresignedNotebookURL-role" {
-  name                = "privesc-sageMakerCreatePresignedNotebookURL-role"
-  assume_role_policy  = jsonencode({
+  name = "privesc-sageMakerCreatePresignedNotebookURL-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -37,12 +41,20 @@ resource "aws_iam_role" "privesc-sageMakerCreatePresignedNotebookURL-role" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 
 resource "aws_iam_user" "privesc-sageMakerCreatePresignedNotebookURL-user" {
   name = "privesc-sageMakerCreatePresignedNotebookURL-user"
   path = "/"
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_access_key" "privesc-sageMakerCreatePresignedNotebookURL-user" {
@@ -61,5 +73,5 @@ resource "aws_iam_role_policy_attachment" "privesc-sageMakerCreatePresignedNoteb
   role       = aws_iam_role.privesc-sageMakerCreatePresignedNotebookURL-role.name
   policy_arn = aws_iam_policy.privesc-sageMakerCreatePresignedNotebookURL-policy.arn
 
-}  
+}
 

@@ -18,11 +18,15 @@ resource "aws_iam_policy" "privesc17-EditExistingLambdaFunctionWithRole" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_role" "privesc17-EditExistingLambdaFunctionWithRole-role" {
-  name                = "privesc17-EditExistingLambdaFunctionWithRole-role"
-  assume_role_policy  = jsonencode({
+  name = "privesc17-EditExistingLambdaFunctionWithRole-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -35,11 +39,19 @@ resource "aws_iam_role" "privesc17-EditExistingLambdaFunctionWithRole-role" {
       },
     ]
   })
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_user" "privesc17-EditExistingLambdaFunctionWithRole-user" {
   name = "privesc17-EditExistingLambdaFunctionWithRole-user"
   path = "/"
+  tags = {
+    git_org  = "jjchavanne"
+    git_repo = "iam-vulnerable"
+  }
 }
 
 resource "aws_iam_access_key" "privesc17-EditExistingLambdaFunctionWithRole-user" {
